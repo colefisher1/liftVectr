@@ -75,7 +75,7 @@ jobs:
         if: always()
         with:
           name: reports
-          path: application/build/test-results
+          path: app/build/test-results
         
   # Job to generate the test report
   report:
