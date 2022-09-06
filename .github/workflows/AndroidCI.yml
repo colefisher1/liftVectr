@@ -30,7 +30,10 @@ jobs:
           distribution: 'adopt'
 
       - name: Build with Gradle
-        run: gradle build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
+          build-root-directory: application
         
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
