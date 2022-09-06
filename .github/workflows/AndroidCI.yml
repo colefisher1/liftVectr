@@ -21,7 +21,7 @@ jobs:
     # emulator configurations for instrumented unit tests
     strategy:
       matrix:
-        api-level: [21, 23, 29]
+        api-level: [30]
         target: [default, google_apis]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -57,7 +57,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
           arch: x86_64
-          script: ./gradlew -p application connectedAndroidTest
+          script: ./application/gradlew -p application connectedAndroidTest
           
       - name: Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
