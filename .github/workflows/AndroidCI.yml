@@ -39,8 +39,17 @@ jobs:
           arguments: build
           build-root-directory: application
         
-      - name: Run Unit Tests
-        run: ./application/gradlew test --tests "*"
+      - name: Run Local Unit Tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test
+          build-root-directory: application
+        
+      - name: Run Instrumented Unit Tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: connectedAndroidTest
+          build-root-directory: application
         
       - name: Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
