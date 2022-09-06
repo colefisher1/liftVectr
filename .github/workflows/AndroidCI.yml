@@ -69,6 +69,9 @@ jobs:
           api-level: 27
           script: ./application/gradlew -p application connectedAndroidTest
           
-      - name: Test Report
-        uses: asadmansr/android-test-report-action@v1.2.0
+      - name: Upload Test Reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: Test-Reports
+          path: app/build/reports
         if: always()
