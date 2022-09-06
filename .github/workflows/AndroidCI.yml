@@ -40,7 +40,7 @@ jobs:
           build-root-directory: application
         
       - name: Run Unit Tests
-        run: ./application/gradlew testDebugUnitTest
+        run: ./application/gradlew test --tests "*"
         
       - name: Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
