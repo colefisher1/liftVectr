@@ -13,18 +13,10 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "test"
-  test:
+  build: 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     
-    # emulator configurations for instrumented unit tests
-    strategy:
-      matrix:
-        api-level: [27] # api level <= 27 to increase speed
-        target: [default, google_apis]
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -44,6 +36,28 @@ jobs:
         with:
           arguments: build
           build-root-directory: application
+          
+  test:
+    # The type of runner that the job will run on
+    runs-on: macos-latest
+    needs: build
+    
+    # emulator configurations for instrumented unit tests
+    strategy:
+      matrix:
+        api-level: [27] # api level <= 27 to increase speed
+        target: [default, google_apis]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
         
       - name: Run Local Unit Tests
         uses: gradle/gradle-build-action@v2
