@@ -13,18 +13,13 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "test"
-  test:
-    # The type of runner that the job will run on
-    runs-on: macos-latest
-    
-    # emulator configurations for instrumented unit tests
-    strategy:
-      matrix:
-        api-level: [27] # api level <= 27 to increase speed
-        target: [default, google_apis]
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  # Job for building the Android app
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -44,6 +39,22 @@ jobs:
         with:
           arguments: build
           build-root-directory: application
+    
+  test:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      # Need to make sure gradlew is executable
+      - name: Set up Gradle
+        run: chmod +x ./application/gradlew 
         
       - name: Run Local Unit Tests
         uses: gradle/gradle-build-action@v2
@@ -54,9 +65,7 @@ jobs:
       - name: Run Instrumented Unit Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
-          arch: x86_64
+          api-level: 27
           script: ./application/gradlew -p application connectedAndroidTest
           
       - name: Test Report
