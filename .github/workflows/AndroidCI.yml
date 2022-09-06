@@ -21,7 +21,7 @@ jobs:
     # emulator configurations for instrumented unit tests
     strategy:
       matrix:
-        api-level: [30]
+        api-level: [27] # api level <= 27 running on macos-latest to increase speed
         target: [default, google_apis]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
