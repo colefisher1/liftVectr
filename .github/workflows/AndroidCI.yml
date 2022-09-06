@@ -46,11 +46,12 @@ jobs:
           build-root-directory: application
         
       - name: Run Instrumented Unit Tests
-        uses: gradle/gradle-build-action@v2
+        uses: reactivecircus/android-emulator-runner@v2
         with:
-          arguments: connectedAndroidTest
-          build-root-directory: application
-        
+          api-level: 30
+          profile: Nexus 4
+          script: ./gradlew -p application connectedAndroidTest
+          
       - name: Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
         if: always()
