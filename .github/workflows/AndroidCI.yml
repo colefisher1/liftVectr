@@ -42,6 +42,7 @@ jobs:
     
   test:
     runs-on: macos-latest
+    needs: build
 
     steps:
       - uses: actions/checkout@v3
