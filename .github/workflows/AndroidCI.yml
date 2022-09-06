@@ -29,6 +29,10 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
 
+      # Need to make sure gradlew is executable
+      - name: Set up Gradle
+        run: chmod +x ./application/gradlew 
+        
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
