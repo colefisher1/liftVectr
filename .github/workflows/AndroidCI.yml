@@ -75,13 +75,13 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 27
-          script: ./application/gradlew -p application connectedAndroidTest
+          script: ./application/gradlew -p application connectedCheck --stacktrace
         
       - name: Upload Instrumented Test Results
         uses: actions/upload-artifact@v2
         with:
           name: instrumented-test-results
-          path: application/app/build/reports/androidTests/connectedAndroidTest
+          path: application/app/build/reports/androidTests/connected
         if: always()
       
         
