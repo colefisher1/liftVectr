@@ -64,12 +64,12 @@ jobs:
           arguments: testDebugUnitTest
           build-root-directory: application
         
-      - name: Upload Unit Test Results
-        uses: actions/upload-artifact@v2
-        with:
-          name: unit-test-results
-          path: application/app/build/reports/tests/testDebugUnitTest
-        if: always()
+#       - name: Upload Unit Test Results
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: unit-test-results
+#           path: application/app/build/reports/tests/testDebugUnitTest
+#         if: always()
         
       - name: Run Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -81,7 +81,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: instrumented-test-results
-          path: application/app/build/reports/androidTests/connectedAndroidTest
+          path: application/app/build/test-results
         if: always()
       
         
@@ -92,10 +92,10 @@ jobs:
     
     if: always()
     steps:
-      - name: Download Unit Test Results
-        uses: actions/download-artifact@v2
-        with:
-          name: unit-test-results
+#       - name: Download Unit Test Results
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: unit-test-results
           
       - name: Download Instrumented Test Results
         uses: actions/download-artifact@v2
