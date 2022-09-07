@@ -61,21 +61,29 @@ jobs:
       - name: Run Unit Tests
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: test
+          arguments: testDebugUnitTest
           build-root-directory: application
+        
+      - name: Upload Unit Test Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit-test-results
+          path: app/build/reports/tests/testDebugUnitTest
+        if: always()
         
       - name: Run Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 27
           script: ./application/gradlew -p application connectedAndroidTest
-          
-      - name: Upload Test Results
+        
+      - name: Upload Instrumented Test Results
         uses: actions/upload-artifact@v2
-        if: always()
         with:
-          name: test-results
-          path: app/build/test-results
+          name: instrumented-test-results
+          path: app/build/reports/androidTests/connectedAndroidTest
+        if: always()
+      
         
   # Job to generate the test report
   report:
@@ -84,12 +92,15 @@ jobs:
     
     if: always()
     steps:
-      - name: Download Test Results
+      - name: Download Unit Test Results
         uses: actions/download-artifact@v2
         with:
-          name: test-results
+          name: unit-test-results
+          
+      - name: Download Instrumented Test Results
+        uses: actions/download-artifact@v2
+        with:
+          name: instrumented-test-results
 
       - name: Generate Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
-        
-      
