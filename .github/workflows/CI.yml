@@ -1,4 +1,4 @@
-name: Android App CI
+name: liftVectr CI
 
 # Controls when the workflow will run
 on:
@@ -40,7 +40,7 @@ jobs:
           arguments: build
           build-root-directory: application
     
-  # Job to run unit/instrumented tests
+  # Job to run unit and instrumented tests
   test:
     runs-on: macos-latest
     needs: build
@@ -83,7 +83,6 @@ jobs:
           name: instrumented-test-results
           path: application/app/build/reports/androidTests/connected
         if: always()
-      
         
   # Job to generate the test report
   report:
