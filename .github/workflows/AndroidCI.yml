@@ -58,13 +58,13 @@ jobs:
       - name: Set up Gradle
         run: chmod +x ./application/gradlew 
         
-      - name: Run Local Unit Tests
+      - name: Run Unit Tests
         uses: gradle/gradle-build-action@v2
         with:
           arguments: test
           build-root-directory: application
         
-      - name: Run Instrumented Unit Tests
+      - name: Run Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 27
@@ -74,8 +74,8 @@ jobs:
         uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: reports
-          path: reports
+          name: test-results
+          path: app/build/test-results
         
   # Job to generate the test report
   report:
@@ -87,7 +87,9 @@ jobs:
       - name: Download Test Results
         uses: actions/download-artifact@v2
         with:
-          name: reports
+          name: test-results
 
-      - name: Generate Test Reports
+      - name: Generate Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
+        
+      
