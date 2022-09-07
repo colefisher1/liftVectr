@@ -68,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: unit-test-results
-          path: app/build/reports/tests/testDebugUnitTest
+          path: application/app/build/reports/tests/testDebugUnitTest
         if: always()
         
       - name: Run Instrumented Tests
@@ -81,7 +81,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: instrumented-test-results
-          path: app/build/reports/androidTests/connectedAndroidTest
+          path: application/app/build/reports/androidTests/connectedAndroidTest
         if: always()
       
         
