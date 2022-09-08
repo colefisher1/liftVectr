@@ -1,7 +1,7 @@
 # liftVectr
 
 liftVectr is a wrist device and mobile app pairing that provides measurement, analysis, and tracking tools to weightlifters.
-CI TEST
+
 ## Installation
 
 Create a folder on your local computer for the project. Navigate to that directory within a terminal and clone the repository.
