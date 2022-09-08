@@ -29,11 +29,11 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+          cache: 'gradle'
 
       # Need to make sure gradlew is executable
-      - name: Set up Gradle
-        run: chmod +x ./application/gradlew 
-        
+      - run: chmod +x ./application/gradlew 
+      
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
@@ -53,10 +53,10 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-
+          cache: 'gradle'
+          
       # Need to make sure gradlew is executable
-      - name: Set up Gradle
-        run: chmod +x ./application/gradlew 
+      - run: chmod +x ./application/gradlew 
         
       - name: Run Unit Tests
         uses: gradle/gradle-build-action@v2
@@ -71,10 +71,33 @@ jobs:
           path: application/app/build/reports/tests/testDebugUnitTest
         if: always()
         
+      # Cache the AVD (reduce emulator startup time)
+      - name: Set up AVD Cache
+        uses: actions/cache@v3
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-27
+          
+      - name: Create AVD and Generate Snapshot for Caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 27
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+          
       - name: Run Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 27
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
           script: ./application/gradlew -p application connectedCheck --stacktrace
         
       - name: Upload Instrumented Test Results
@@ -83,23 +106,3 @@ jobs:
           name: instrumented-test-results
           path: application/app/build/reports/androidTests/connected
         if: always()
-        
-  # Job to generate the test report
-  report:
-    runs-on: ubuntu-latest
-    needs: test
-    
-    if: always()
-    steps:
-      - name: Download Unit Test Results
-        uses: actions/download-artifact@v2
-        with:
-          name: unit-test-results
-          
-      - name: Download Instrumented Test Results
-        uses: actions/download-artifact@v2
-        with:
-          name: instrumented-test-results
-
-      - name: Generate Test Report
-        uses: asadmansr/android-test-report-action@v1.2.0
