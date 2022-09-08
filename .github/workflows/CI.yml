@@ -31,14 +31,6 @@ jobs:
           distribution: 'adopt'
           cache: 'gradle'
 
-      # Cache Gradle Dependencies
-#       - uses: actions/cache@v2
-#         with:
-#           path: |
-#             ~/.gradle/caches
-#             ~/.gradle/wrapper
-#           key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.java') }}
-          
       # Need to make sure gradlew is executable
       - run: chmod +x ./application/gradlew 
         
@@ -61,14 +53,6 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-
-      # Cache Gradle Dependencies
-#       - uses: actions/cache@v2
-#         with:
-#           path: |
-#             ~/.gradle/caches
-#             ~/.gradle/wrapper
-#           key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.java') }}
           
       # Need to make sure gradlew is executable
       - run: chmod +x ./application/gradlew 
@@ -86,10 +70,33 @@ jobs:
           path: application/app/build/reports/tests/testDebugUnitTest
         if: always()
         
+      # Cache the AVD (reduce emulator startup time)
+      - name: Set up AVD Cache
+        uses: actions/cache@v3
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-27
+          
+      - name: Create AVD and Generate Snapshot for Caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 27
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+          
       - name: Run Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 27
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
           script: ./application/gradlew -p application connectedCheck --stacktrace
         
       - name: Upload Instrumented Test Results
