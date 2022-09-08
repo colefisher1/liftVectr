@@ -29,25 +29,17 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-          #cache: 'gradle'
-
+          cache: 'gradle'
+      
       # Need to make sure gradlew is executable
       - run: chmod +x ./application/gradlew 
       
-      # Cache Gradle to improve execution time
-      - name: Cache Gradle
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.java') }}
-      
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
-          build-root-directory: application
+        run: ./application/gradlew -p application build
+#         uses: gradle/gradle-build-action@v2
+#         with:
+#           arguments: build
+#           build-root-directory: application
     
   # Job to run unit and instrumented tests
   test:
@@ -62,25 +54,19 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-          #cache: 'gradle'
+          cache: 'gradle'
           
       # Need to make sure gradlew is executable
       - run: chmod +x ./application/gradlew 
       
-       # Cache Gradle to improve execution time
-      - name: Cache Gradle
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.java') }}
-        
+#       - name: Run Unit Tests
+#         uses: gradle/gradle-build-action@v2
+#         with:
+#           arguments: testDebugUnitTest
+#           build-root-directory: application
+          
       - name: Run Unit Tests
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: testDebugUnitTest
-          build-root-directory: application
+        run: ./application/gradlew -p application testDebugUnitTest
         
       - name: Upload Unit Test Results
         uses: actions/upload-artifact@v2
