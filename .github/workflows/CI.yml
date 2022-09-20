@@ -30,16 +30,15 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: 'gradle'
-      
+
       # Need to make sure gradlew is executable
       - run: chmod +x ./application/gradlew 
       
       - name: Build with Gradle
-        run: ./application/gradlew -p application build
-#         uses: gradle/gradle-build-action@v2
-#         with:
-#           arguments: build
-#           build-root-directory: application
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
+          build-root-directory: application
     
   # Job to run unit and instrumented tests
   test:
@@ -58,15 +57,12 @@ jobs:
           
       # Need to make sure gradlew is executable
       - run: chmod +x ./application/gradlew 
-      
-#       - name: Run Unit Tests
-#         uses: gradle/gradle-build-action@v2
-#         with:
-#           arguments: testDebugUnitTest
-#           build-root-directory: application
-          
+        
       - name: Run Unit Tests
-        run: ./application/gradlew -p application testDebugUnitTest
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: testDebugUnitTest
+          build-root-directory: application
         
       - name: Upload Unit Test Results
         uses: actions/upload-artifact@v2

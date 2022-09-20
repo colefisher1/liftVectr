@@ -9,6 +9,7 @@ public class BluetoothControllerTest {
     @Test
     public void testAskForPermissions_shouldSucceed() {
         // TODO: FILL IN TEST CASES
+        // HELLO THERE TEST
     }
 
 }
